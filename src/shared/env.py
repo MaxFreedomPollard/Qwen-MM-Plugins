@@ -199,15 +199,6 @@ CONFIG_FIELDS: list[tuple[str, bool, str, str, str]] = [
         "override the model-bound temporary OSS policy endpoint used for oversized Omni and VL media",
     ),
     (
-        "DASHSCOPE_NATIVE_BASE_URL",
-        False,
-        "Media APIs & endpoints",
-        "host of DASHSCOPE_BASE_URL + /api/v1",
-        "override the DashScope native (non-OpenAI) REST base for the async generation services "
-        "(image/tts/video); needed for gateways that expose native services under a PATH prefix, "
-        "e.g. routify at /protocol/dashscope/api/v1",
-    ),
-    (
         "QWEN_MM_API_VL_MODEL",
         False,
         "Media APIs & endpoints",

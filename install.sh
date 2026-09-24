@@ -78,7 +78,6 @@ CONFIG_SPEC=(
   "MINIMAX_API_KEY|1|services||MiniMax text-to-speech generation"
   "DASHSCOPE_BASE_URL|0|services|DashScope compat URL|override the DashScope OpenAI-compatible base URL"
   "DASHSCOPE_UPLOAD_POLICY_URL|0|services|inferred for official DashScope hosts|override the model-bound temporary OSS policy endpoint used for oversized Omni and VL media"
-  "DASHSCOPE_NATIVE_BASE_URL|0|services|host of DASHSCOPE_BASE_URL + /api/v1|override the DashScope native REST base for async image/tts/video generation (e.g. routify /protocol/dashscope/api/v1)"
   "QWEN_MM_API_VL_MODEL|0|services|qwen3.7-plus|default VL model for vision_chat, OCR, grounding, text-only image captions, and video-spatio VLM tools"
   "QWEN_MM_API_OMNI_MODEL|0|services|qwen3.8-omni-flash|default Omni model for audio/video understanding tools, omni-memory, and Omni ChatCut"
   "SAM3_SERVER_URL|0|services||segmentation SAM3 server URL"
