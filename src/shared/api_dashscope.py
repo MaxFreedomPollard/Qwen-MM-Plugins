@@ -20,11 +20,18 @@ log = logging.getLogger(__name__)
 def _native_base_url() -> str:
     """DashScope native (non-OpenAI) REST base.
 
-    Derived from the host of DASHSCOPE_BASE_URL when set, so pointing at the international endpoint
-    (dashscope-intl.aliyuncs.com) or a proxy also redirects the generation services. Falls back to
-    the public default when unset or malformed (incl. a non-http(s) scheme) — identical behavior to
-    before for users who don't set it.
+    Precedence:
+      1. DASHSCOPE_NATIVE_BASE_URL — used verbatim. Needed for gateways that expose the native REST
+         services under a PATH prefix rather than at the host root, which host-only derivation cannot
+         reach — e.g. routify serves them at ``/protocol/dashscope/api/v1`` (its OpenAI-compatible
+         path, in DASHSCOPE_BASE_URL, is the unrelated ``/protocol/openai/compatible-mode/v1``).
+      2. Host of DASHSCOPE_BASE_URL + ``/api/v1`` — so pointing at the international endpoint
+         (dashscope-intl.aliyuncs.com) or a same-layout proxy also redirects the generation services.
+      3. Public default. Steps 2–3 are the original behavior for users who set neither override.
     """
+    override = (get_env("DASHSCOPE_NATIVE_BASE_URL") or "").strip()
+    if override:
+        return override.rstrip("/")
     base = (get_env("DASHSCOPE_BASE_URL") or "").strip()
     if base:
         from urllib.parse import urlsplit
