@@ -56,9 +56,6 @@ _REGISTRY: dict[str, tuple[str, str]] = {
     ".geojson": ("geo", "render"),
     ".kml": ("geo", "render"),
     ".shp": ("geo", "render"),
-    # Medical imaging volumes
-    ".nii": ("nifti", "render"),
-    ".nii.gz": ("nifti", "render"),
     # Jupyter notebooks
     ".ipynb": ("notebook", "render"),
     # LaTeX
@@ -79,17 +76,6 @@ IMAGE_EXTENSIONS = frozenset({".jpg", ".jpeg", ".png", ".webp", ".tiff", ".tif",
 VIDEO_EXTENSIONS = frozenset({".mp4", ".mov", ".webm", ".avi", ".mkv"})
 
 SUPPORTED_EXTENSIONS = frozenset(_REGISTRY.keys()) | IMAGE_EXTENSIONS | VIDEO_EXTENSIONS
-
-_COMPOUND_EXTENSIONS = tuple(sorted((ext for ext in SUPPORTED_EXTENSIONS if ext.count(".") > 1), key=len, reverse=True))
-
-
-def detect_extension(path: str) -> str:
-    """Return a supported compound extension when present, else the final suffix."""
-    lower_path = os.fspath(path).lower()
-    for ext in _COMPOUND_EXTENSIONS:
-        if lower_path.endswith(ext):
-            return ext
-    return os.path.splitext(lower_path)[1]
 
 
 def get_renderer(ext: str) -> Callable[..., Any] | None:
@@ -145,7 +131,7 @@ def source_to_pdf(path: str, **opts: Any) -> str | None:
     form here (it rasterizes via resvg) — callers handle it separately.
     """
 
-    ext = detect_extension(path)
+    ext = os.path.splitext(path)[1].lower()
     if ext in _PDF_NATIVE_EXTENSIONS:
         return path
 
@@ -176,6 +162,8 @@ def parse_pages(pages_str: str, total_pages: int) -> list[int]:
     """Parse a page range string into 0-based page indices.
 
     Accepts: "1-5", "3", "1,3,5-8".  Input is 1-based, output is 0-based.
+    A blank spec means "no selection" and yields the default page window;
+    a non-blank spec that matches no page raises ValueError.
     """
     result = []
     for part in pages_str.split(","):
@@ -191,4 +179,8 @@ def parse_pages(pages_str: str, total_pages: int) -> list[int]:
             idx = int(part.strip()) - 1
             if 0 <= idx < total_pages:
                 result.append(idx)
-    return sorted(set(result)) if result else list(range(min(total_pages, DEFAULT_MAX_PAGES)))
+    if result:
+        return sorted(set(result))
+    if pages_str.strip():
+        raise ValueError(f"no pages selected from {pages_str!r} (document has {total_pages} page(s))")
+    return list(range(min(total_pages, DEFAULT_MAX_PAGES)))
