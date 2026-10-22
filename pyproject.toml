@@ -68,6 +68,7 @@ video-spatio = ["numpy<3", "scipy", "matplotlib", "opencv-python-headless"]
 video-memory = ["numpy<3", "requests"]        # long-video graph-memory server
 omni-memory = ["numpy<3"]                     # long-video audio-visual memory server (openai client is a base dep)
 omni-video2note = ["reportlab", "pydantic>=2.11", "pypdfium2"]  # local tutorial video to audited illustrated PDF
+omnidr = ["requests[socks]", "pypdfium2", "yt-dlp>=2026.8.19", "playwright"]
 video-edit = ["dashscope>=1.25.16", "requests"]  # image/video/audio generation server
 omni-chatcut = [
     "requests>=2,<3",
@@ -82,9 +83,10 @@ mhs = ["msgpack>=1.1,<2"]                      # Model Hardware Standard host (H
 # capabilities. `all` layers every server on top.
 core = ["qwen-mm-plugins[viz]"]
 memory = ["qwen-mm-plugins[core,video-memory,omni-memory]"]
-all = ["qwen-mm-plugins[core,nifti,api,search,video-memory,omni-memory,omni-video2note,video-edit,omni-chatcut,blender,freecad,omni-skill-creator,mhs,video-spatio]"]
+all = ["qwen-mm-plugins[core,nifti,api,search,video-memory,omni-memory,omni-video2note,omnidr,video-edit,omni-chatcut,blender,freecad,omni-skill-creator,mhs,video-spatio]"]
 
 [project.scripts]
+qwen-mm-plugins-omnidr = "qwen_mm_plugins_omnidr.__main__:main"
 qwen-mm-plugins-video-spatio = "qwen_mm_plugins_video_spatio.__main__:main"
 qwen-mm-plugins-core = "qwen_mm_plugins_core.__main__:main"
 qwen-mm-plugins-nifti = "qwen_mm_plugins_nifti.__main__:main"
@@ -119,6 +121,7 @@ py-modules = ["mcp_framework"]
 
 [tool.setuptools.package-dir]
 "" = "src"
+qwen_mm_plugins_omnidr = "src/capabilities/omnidr/qwen_mm_plugins_omnidr"
 qwen_mm_plugins_core = "src/capabilities/core/qwen_mm_plugins_core"
 qwen_mm_plugins_nifti = "src/capabilities/nifti/qwen_mm_plugins_nifti"
 qwen_mm_plugins_api = "src/capabilities/api/qwen_mm_plugins_api"
@@ -137,12 +140,13 @@ qwen_mm_plugins_video_spatio = "src/capabilities/video-spatio/qwen_mm_plugins_vi
 shared = "src/shared"
 
 [tool.setuptools.packages.find]
-where = ["src/capabilities/video-spatio", "src/capabilities/core", "src/capabilities/nifti", "src/capabilities/api", "src/capabilities/search", "src/capabilities/video-memory", "src/capabilities/omni-memory", "src/capabilities/omni-video2note", "src/capabilities/video-edit", "src/capabilities/omni-chatcut", "src/capabilities/example", "src/capabilities/blender", "src/capabilities/freecad", "src/capabilities/omni-skill-creator", "src/capabilities/mhs", "src"]
+where = ["src/capabilities/omnidr", "src/capabilities/video-spatio", "src/capabilities/core", "src/capabilities/nifti", "src/capabilities/api", "src/capabilities/search", "src/capabilities/video-memory", "src/capabilities/omni-memory", "src/capabilities/omni-video2note", "src/capabilities/video-edit", "src/capabilities/omni-chatcut", "src/capabilities/example", "src/capabilities/blender", "src/capabilities/freecad", "src/capabilities/omni-skill-creator", "src/capabilities/mhs", "src"]
 include = ["qwen_mm_plugins*", "shared*"]
 
 # The vendored live-session addons ship as package DATA (not importable subpackages — no __init__ on
 # vendor/): --launch-app resolves them on disk and hands them to Blender/FreeCAD, which load them.
 [tool.setuptools.package-data]
+qwen_mm_plugins_omnidr = ["assets/*.html", "assets/*.css", "assets/*.js", "assets/*.mjs"]
 qwen_mm_plugins_blender = ["vendor/*.py", "vendor/**/*.py", "vendor/LICENSE"]
 qwen_mm_plugins_freecad = ["vendor/**/*.py", "vendor/FreeCADMCP/*.py", "vendor/FreeCADMCP/rpc_server/*.py", "vendor/FreeCADMCP/LICENSE"]
 

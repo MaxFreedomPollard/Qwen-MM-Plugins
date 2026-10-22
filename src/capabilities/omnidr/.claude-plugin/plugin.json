@@ -1,0 +1,18 @@
+{
+  "name": "qwen-mm-plugins-omnidr",
+  "version": "1.0.0",
+  "description": "Research a video using audiovisual evidence and external sources, and produce a cited interactive report.",
+  "skills": [
+    "./skill"
+  ],
+  "mcpServers": {
+    "qwen-mm-plugins-omnidr": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "qwen-mm-plugins[omnidr] @ git+https://github.com/QwenLM/Qwen-MM-Plugins.git@main",
+        "qwen-mm-plugins-omnidr"
+      ]
+    }
+  }
+}

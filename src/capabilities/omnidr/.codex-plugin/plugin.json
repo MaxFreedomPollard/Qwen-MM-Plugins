@@ -1,0 +1,7 @@
+{
+  "name": "qwen-mm-plugins-omnidr",
+  "version": "1.0.0",
+  "description": "Research a video using audiovisual evidence and external sources, and produce a cited interactive report.",
+  "skills": "./skill",
+  "mcpServers": "./.mcp.json"
+}
